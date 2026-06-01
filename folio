@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+# folio — run-in-place launcher.
+# On first run, bootstraps a local .venv with the Python deps (pyyaml, pypdf),
+# then runs the folio package. Self-contained; nothing is installed globally.
+set -euo pipefail
+DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+VENV="$DIR/.venv"
+STAMP="$VENV/.deps-ok"
+
+if [ ! -f "$STAMP" ]; then
+  echo "folio: first-run setup (creating .venv, installing pyyaml + pypdf)..." >&2
+  python3 -m venv "$VENV"
+  "$VENV/bin/pip" install -q --upgrade pip >/dev/null
+  "$VENV/bin/pip" install -q pyyaml pypdf
+  touch "$STAMP"
+fi
+
+exec env PYTHONPATH="$DIR/src" "$VENV/bin/python" -m folio "$@"

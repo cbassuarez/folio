@@ -1,0 +1,11 @@
+[project]
+name = "folio"
+version = "0.1.0"
+description = "Build cohesive, submission-ready PDF packets from a single manifest: themed documents, a designed work-sample index, score banners with internal jump-links, and a packaged upload folder."
+requires-python = ">=3.11"
+dependencies = ["pyyaml", "pypdf"]
+
+# folio is designed to run in place via ./folio (which bootstraps a local
+# .venv). This file documents deps and metadata; pip install is optional.
+[project.scripts]
+folio = "folio.cli:main"

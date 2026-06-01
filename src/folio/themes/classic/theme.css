@@ -1,0 +1,113 @@
+/* folio theme: classic
+   Editorial system — serif body, sans headers, navy links, neo-brutalist
+   banner, running footer, and designed work-sample cards. Brand-neutral. */
+
+@page { size: Letter; margin: 0.8in 0.85in 0.8in 0.85in; }
+html { font-size: 10.7pt; }
+
+body {
+  font-family: "Iowan Old Style", "Hoefler Text", Garamond, "Times New Roman", serif;
+  line-height: 1.46; color: #111; max-width: 6.9in; margin: 0 auto;
+  -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility;
+  widows: 3; orphans: 3;
+}
+h1, h2, h3, h4 {
+  font-family: -apple-system, "SF Pro Display", "Helvetica Neue", Helvetica, sans-serif;
+  font-weight: 600; color: #111; page-break-after: avoid; break-after: avoid-page;
+}
+h1 { font-size: 18pt; letter-spacing: -0.015em; margin: 0 0 0.4em; }
+h2 { font-size: 13pt; line-height: 1.12; letter-spacing: -0.01em; margin: 1.5em 0 0.55em; }
+h2 .num { color: #1d4eb8; font-weight: 700; }
+h2 .yr  { color: #888; font-weight: 500; font-size: 10.5pt; }
+h3 { font-size: 10.7pt; margin: 0.7em 0 0.2em; color: #222; }
+p { margin: 0.5em 0; orphans: 3; widows: 3; }
+em { font-style: italic; color: #2a2a2a; }
+strong { font-weight: 600; color: #111; }
+a { color: #1d4eb8; text-decoration: none; border-bottom: 0.4px solid #9bb1de; }
+
+/* hide pandoc's auto title block; the banner is the title */
+header#title-block-header { display: none; }
+
+/* ---- banner (in-document, page 1) ---- */
+.banner {
+  display: flex; align-items: flex-end; justify-content: space-between; gap: 1.2em;
+  border: 2px solid #111; background: #fff; box-shadow: 6px 6px 0 #1d4eb8;
+  padding: 0.5em 0.78em 0.58em; margin: 0 0 1.5em 0;
+  break-inside: avoid; page-break-inside: avoid;
+}
+.banner-kicker {
+  font: 600 7.6pt/1.25 -apple-system, sans-serif; letter-spacing: 0.14em;
+  text-transform: uppercase; color: #1d4eb8;
+}
+.banner-title { font: 600 14.5pt/1.05 -apple-system, sans-serif; letter-spacing: -0.012em; color: #111; }
+.banner-right {
+  text-align: right; font: 600 7.6pt/1.35 -apple-system, sans-serif;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #8a8a8a; white-space: nowrap;
+}
+
+/* ---- running footer (repeats every printed page) ---- */
+.runfoot {
+  position: fixed; left: 0; right: 0; bottom: 0.34in; text-align: center;
+  font: 8.1pt/1 -apple-system, sans-serif; letter-spacing: 0.03em; color: #8a8a8a;
+}
+
+/* ---- metadata tables ---- */
+table {
+  border-collapse: collapse; width: 100%; margin: 0.2em 0 0.9em; font-size: 10pt;
+  page-break-inside: avoid; break-inside: avoid;
+}
+thead th { padding: 0; border: none; height: 0; line-height: 0; font-size: 0; }
+th, td { text-align: left; vertical-align: top; padding: 0.26em 0.6em 0.26em 0; border-bottom: 0.5px solid #e6e6e6; }
+tbody tr:last-child td { border-bottom: none; }
+tbody td:first-child {
+  width: 1.5in; font-family: -apple-system, sans-serif; font-size: 8.4pt;
+  letter-spacing: 0.06em; text-transform: uppercase; color: #666; padding-top: 0.42em;
+}
+tr { page-break-inside: avoid; break-inside: avoid; }
+.meta table { border: 1.5px solid #111; }
+.meta th, .meta td { padding: 0.3em 0.7em; border-bottom: 0.5px solid #d8d8d8; }
+.meta tbody tr:last-child td { border-bottom: none; }
+
+.lede {
+  font-size: 10.7pt; color: #333; border-left: 2px solid #1d4eb8;
+  padding-left: 0.8em; margin: 0.4em 0 1.2em;
+}
+
+/* ---- work cards (index) ---- */
+.work {
+  break-inside: avoid; page-break-inside: avoid; margin: 0 0 1.1em;
+  padding-top: 0.9em; border-top: 0.75px solid #d8d8d8;
+}
+.work:first-of-type { border-top: none; padding-top: 0.2em; }
+.work h2 { margin: 0 0 0.5em; }
+.work-head { display: flex; gap: 1em; align-items: flex-start; margin: 0.1em 0 0.55em; }
+.work-thumb { flex: 0 0 2.5in; margin: 0; text-align: center; }
+.work-thumb img {
+  display: inline-block; max-width: 2.5in; max-height: 2.35in; width: auto; height: auto;
+  border: 1.5px solid #111; box-shadow: 4px 4px 0 rgba(29, 78, 184, 0.16);
+}
+.work-thumb .cap {
+  display: block; margin-top: 0.5em; font: 7.8pt/1.3 -apple-system, sans-serif;
+  letter-spacing: 0.03em; color: #888;
+}
+.work-meta { flex: 1; }
+.work-meta table { margin: 0; font-size: 9.3pt; }
+.work-meta td { padding: 0.2em 0.5em 0.2em 0; border-bottom: 0.5px solid #ededed; }
+.work-meta td:first-child {
+  width: 1.05in; padding-top: 0.32em; font-size: 7.6pt; letter-spacing: 0.06em;
+  text-transform: uppercase; color: #777;
+}
+.work-meta .files {
+  margin-top: 0.5em; font: 8.3pt/1.5 "SF Mono", Menlo, Consolas, monospace;
+  color: #444; word-break: break-all;
+}
+.work-meta .files .lbl {
+  font-family: -apple-system, sans-serif; color: #999;
+  text-transform: uppercase; letter-spacing: 0.05em; font-size: 7pt;
+}
+.work-meta .rel {
+  display: inline-block; margin-top: 0.1em; font: 600 8.2pt/1 -apple-system, sans-serif;
+  letter-spacing: 0.04em; color: #1d4eb8; border: 1.2px solid #1d4eb8; border-radius: 2px;
+  padding: 0.18em 0.4em;
+}
+.work-statement { margin: 0; }

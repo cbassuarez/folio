@@ -1,0 +1,64 @@
+# folio packet manifest. Run `folio build` in this directory.
+# Paths are relative to this file.
+
+output: "Lastname_Example_Submission"   # name of the assembled folder under out/
+suffix: "Lastname"                       # appended to every file: NAME_Lastname.ext (optional; "" to omit)
+theme: classic                           # bundled theme (see folio/themes/)
+accent: "#1d4eb8"                        # banner accent + link colour
+
+identity:                                # appears on every PDF
+  kicker: "Example Submission · 2026"    # small uppercase line in the banner
+  tag: "First\nLast"                     # right-hand block of the banner (\n = line break)
+  footer: "First Last · example.com · me@example.com"   # repeats on every page
+
+docs:                                    # text documents, built in order
+  - source: content/statement.md
+    out: "01_Statement_of_Interest"
+    title: "01 · Statement of Interest"
+  - source: content/cv.md
+    out: "02_CV"
+    title: "02 · Curriculum Vitae"
+  - index: true                          # auto-generated work-sample index
+    out: "03_Work_Sample_Index"
+    title: "03 · Work Sample Index"
+    lede: "Three work samples, each a paired audio excerpt and a full score PDF. Every score opens with a banner linking to its relevant page."
+
+works:                                   # paired audio + score samples
+  - title: "First Work"
+    subtitle: "for ensemble"             # optional
+    year: "2024"
+    medium: "Chamber ensemble"
+    duration: "approx. 8 min"
+    thumb_caption: "Opening (p.1)"       # optional caption under the index thumbnail
+    statement: |
+      A short paragraph about this work and why it is included. Markdown/HTML
+      inline (<em>like this</em>) is fine.
+    audio:
+      source: src/first-work.mp3
+      label: "Excerpt"
+      # duration: "1:00"                 # optional; auto-probed with ffprobe if omitted
+    score:
+      source: src/first-work.pdf
+      relevant_page: 1                   # physical page (1-based): thumbnail + jump target
+      # page_label: "p.1"                # banner pill text; defaults to "p.<relevant_page>"
+      # detail: "Audio excerpt - opening"# banner main line; sensible default otherwise
+      position: top                      # top | bottom (where the banner box sits on the cover)
+
+  - title: "Second Work"
+    year: "2023"
+    medium: "Solo instrument"
+    duration: "approx. 12 min"
+    statement: |
+      Another work. This one ships two score files: a main score and a separate
+      rehearsal score, shown via extra_scores.
+    audio:
+      source: src/second-work.mp3
+      label: "Excerpt"
+    score:
+      source: src/second-work.pdf
+      relevant_page: 3
+    extra_scores:
+      - source: src/second-work-rehearsal.pdf
+        out_tag: "rehearsal-score"       # filename gets a letter suffix (e.g. 02a_..._rehearsal-score)
+        relevant_page: 7
+        page_label: "mvmt 2"

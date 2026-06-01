@@ -1,0 +1,3 @@
+Put your source score PDFs and audio files here, then point packet.yaml at them
+(e.g. src/first-work.pdf, src/first-work.mp3). folio leaves these untouched and
+writes finished, renamed copies into out/<output>/Work_Samples/.
