@@ -29,10 +29,14 @@ class Identity:
 @dataclass
 class Doc:
     out: str                       # base output filename (no extension/suffix)
-    title: str                     # banner title line
+    title: str                     # banner title line (or cover title)
     source: Optional[str] = None   # content markdown path (relative to packet dir)
     is_index: bool = False
     lede: str = ""
+    cover: bool = False            # render a full title page instead of the banner
+    toc: bool = False              # render a table of contents (h2 sections)
+    subtitle: str = ""             # cover-page subtitle
+    compact: bool = False          # denser type/spacing (for résumés, dense docs)
 
 
 @dataclass
@@ -118,7 +122,11 @@ def load(packet_dir: str) -> Packet:
         else:
             docs.append(Doc(out=_req(d, "out", "docs[]"),
                             title=d.get("title", d["out"]),
-                            source=_req(d, "source", "docs[]")))
+                            source=_req(d, "source", "docs[]"),
+                            cover=d.get("cover", False),
+                            toc=d.get("toc", False),
+                            subtitle=d.get("subtitle", ""),
+                            compact=d.get("compact", False)))
 
     works: list[Work] = []
     for i, w in enumerate(raw.get("works", []) or [], start=1):

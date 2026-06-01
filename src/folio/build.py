@@ -2,6 +2,7 @@
 from __future__ import annotations
 import html
 import os
+import re
 import shutil
 import subprocess
 
@@ -25,20 +26,80 @@ def _probe_duration(path: str) -> str:
         return ""
 
 
-def _banner_html(kicker: str, title: str, tag: str) -> str:
-    return index.banner_block(kicker, title, tag)
+def _slug(text: str) -> str:
+    s = re.sub(r"<[^>]+>", "", text)               # strip any inline html
+    s = re.sub(r"[^\w\s-]", "", s).strip().lower()
+    return re.sub(r"\s+", "-", s)
 
 
-def _inject(src_md: str, packet: config.Packet, title: str) -> str:
-    """Insert the banner after YAML front matter and append the footer."""
+def _toc_and_ids(body: str):
+    """Assign ids to level-2 headings and return (rewritten_body, toc_html)."""
+    entries, seen = [], set()
+    out_lines = []
+    for line in body.splitlines():
+        m = re.match(r"^##\s+(.+?)\s*$", line)
+        if m and not line.startswith("###"):
+            text = m.group(1)
+            if "{#" in text:                        # explicit id already present
+                sid = re.search(r"\{#([^}]+)\}", text).group(1)
+                label = re.sub(r"\s*\{#[^}]+\}", "", text)
+            else:
+                sid = _slug(text) or f"sec-{len(entries)}"
+                while sid in seen:
+                    sid += "-x"
+                label = text
+                line = f"## {text} {{#{sid}}}"
+            seen.add(sid)
+            entries.append((sid, label))
+        out_lines.append(line)
+    items = "\n".join(
+        f'<li><a href="#{sid}">{html.escape(label)}</a></li>' for sid, label in entries)
+    toc = (f'<nav class="toc">\n<div class="toc-head">Contents</div>\n<ol>\n{items}\n</ol>\n</nav>\n'
+           if entries else "")
+    return "\n".join(out_lines), toc
+
+
+def _cover_html(packet: config.Packet, doc: config.Doc) -> str:
+    title = re.sub(r"^\s*\d+\s*·\s*", "", doc.title)   # strip leading "NN · "
+    author = packet.identity.tag.replace("\n", " ")
+    sub = f'<p class="cover-sub">{html.escape(doc.subtitle)}</p>\n' if doc.subtitle else ""
+    return (
+        '<section class="cover">\n'
+        f'<div class="cover-kicker">{html.escape(packet.identity.kicker)}</div>\n'
+        f'<h1 class="cover-title">{html.escape(title)}</h1>\n'
+        f'{sub}'
+        f'<p class="cover-author">{html.escape(author)}</p>\n'
+        '</section>\n')
+
+
+def _inject(src_md: str, packet: config.Packet, doc: config.Doc) -> str:
+    """Build the renderable markdown for a text doc: cover/banner + (toc) +
+    content + end colophon, honoring compact mode."""
     txt = open(src_md).read()
-    banner = _banner_html(packet.identity.kicker, title, packet.identity.tag)
-    footer = (f'\n\n<div class="runfoot">{html.escape(packet.identity.footer)}</div>\n'
-              if packet.identity.footer else "")
+    fm, body = "", txt
     if txt.startswith("---"):
-        _, fm, body = txt.split("---", 2)
-        return f"---{fm}---\n\n{banner}\n{body.lstrip()}{footer}"
-    return f"{banner}\n{txt}{footer}"
+        _, fm_raw, body = txt.split("---", 2)
+        fm = f"---{fm_raw}---\n\n"
+        body = body.lstrip()
+
+    head = ""
+    if doc.cover:
+        head += _cover_html(packet, doc)
+        if doc.toc:
+            body, toc = _toc_and_ids(body)
+            head += toc
+    else:
+        head += index.banner_block(packet.identity.kicker, doc.title, packet.identity.tag)
+        if doc.toc:
+            body, toc = _toc_and_ids(body)
+            head += toc
+
+    colophon = (f'\n\n<div class="runfoot">{html.escape(packet.identity.footer)}</div>\n'
+                if packet.identity.footer else "")
+
+    if doc.compact:
+        return f'{fm}{head}\n<div class="compact">\n\n{body}\n\n</div>\n{colophon}'
+    return f"{fm}{head}\n{body}{colophon}"
 
 
 def build(packet_dir: str) -> str:
@@ -78,7 +139,7 @@ def build(packet_dir: str) -> str:
         else:
             src = os.path.join(pk.root, doc.source)
             md_path = os.path.join(work, f"_{doc.out}.md")
-            open(md_path, "w").write(_inject(src, pk, doc.title))
+            open(md_path, "w").write(_inject(src, pk, doc))
             render.md_to_pdf(md_path, out_pdf, [theme_css],
                              [pk.root, os.path.dirname(src), work], work)
         print(f"  {pk.fname(doc.out, 'pdf')}")

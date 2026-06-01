@@ -20,6 +20,11 @@ h2 { font-size: 13pt; line-height: 1.12; letter-spacing: -0.01em; margin: 1.5em 
 h2 .num { color: #1d4eb8; font-weight: 700; }
 h2 .yr  { color: #888; font-weight: 500; font-size: 10.5pt; }
 h3 { font-size: 10.7pt; margin: 0.7em 0 0.2em; color: #222; }
+
+/* keep a section heading with the block(s) that follow it, so a heading is
+   never stranded at the bottom of a page while its content moves on */
+h2 + p, h3 + p { break-after: avoid; page-break-after: avoid; }
+h2 + p + table, h2 + p + p, h2 + table, h2 + ul, h2 + ol { break-before: avoid; page-break-before: avoid; }
 p { margin: 0.5em 0; orphans: 3; widows: 3; }
 em { font-style: italic; color: #2a2a2a; }
 strong { font-weight: 600; color: #111; }
@@ -51,11 +56,58 @@ header#title-block-header { display: none; }
   letter-spacing: 0.06em; text-transform: uppercase; color: #8a8a8a; white-space: nowrap;
 }
 
-/* ---- running footer (repeats every printed page) ---- */
+/* ---- end colophon (in-flow; sits after the last content) ---- */
 .runfoot {
-  position: fixed; left: 0; right: 0; bottom: 0.34in; text-align: center;
-  font: 8.1pt/1 -apple-system, sans-serif; letter-spacing: 0.03em; color: #8a8a8a;
+  margin-top: 1.5em; padding-top: 0.6em; border-top: 0.5px solid #d8d8d8;
+  text-align: center; font: 8.1pt/1.3 -apple-system, sans-serif;
+  letter-spacing: 0.03em; color: #8a8a8a;
+  break-inside: avoid; page-break-inside: avoid;
 }
+
+/* ---- cover page (doc.cover) ---- */
+.cover {
+  height: 9.3in; display: flex; flex-direction: column; justify-content: center;
+  page-break-after: always; break-after: page;
+}
+.cover-kicker {
+  font: 600 9pt/1.3 -apple-system, sans-serif; letter-spacing: 0.16em;
+  text-transform: uppercase; color: #1d4eb8; margin-bottom: 1.1em;
+}
+.cover-title {
+  font-family: -apple-system, "SF Pro Display", "Helvetica Neue", sans-serif;
+  font-size: 40pt; font-weight: 700; letter-spacing: -0.02em; line-height: 1.02;
+  margin: 0; color: #111;
+}
+.cover-sub { font-style: italic; font-size: 14pt; color: #444; margin: 0.65em 0 0; max-width: 5.4in; }
+.cover-author {
+  margin-top: 2em; font: 600 10pt/1.3 -apple-system, sans-serif;
+  letter-spacing: 0.05em; text-transform: uppercase; color: #555;
+}
+
+/* ---- table of contents (doc.toc) ---- */
+.toc { page-break-after: always; break-after: page; }
+.toc-head {
+  font: 600 9.8pt/1 -apple-system, sans-serif; letter-spacing: 0.08em;
+  text-transform: uppercase; color: #555; border-bottom: 0.5px solid #cfcfcf;
+  padding-bottom: 0.3em; margin-bottom: 0.9em;
+}
+.toc ol { list-style: none; margin: 0; padding: 0; }
+.toc li { margin: 0.4em 0; font-size: 12pt; }
+.toc li a { color: #111; border-bottom: none; }
+
+/* ---- compact density (doc.compact) ---- */
+.compact { font-size: 8.5pt; line-height: 1.24; }
+.compact h1 { font-size: 15pt; margin: 0 0 0.05em; }
+.compact h1 + p { font-size: 8pt; margin: 0.1em 0; }
+.compact h1 + p + p { padding: 0.22em 0; margin: 0.1em 0 0.45em; }
+.compact h2 { font-size: 10pt; margin: 0.5em 0 0.22em; padding-bottom: 0; }
+.compact h3 { font-size: 8.9pt; margin: 0.35em 0 0.1em; }
+.compact p, .compact li { margin: 0.12em 0; }
+.compact ul, .compact ol { margin: 0.14em 0 0.26em 1em; }
+.compact li { margin: 0.1em 0; }
+.compact table { font-size: 8.2pt; margin: 0.12em 0 0.4em; }
+.compact th, .compact td { padding: 0.1em 0.5em 0.1em 0; }
+.compact tbody td:first-child { font-size: 6.8pt; padding-top: 0.2em; width: 1.3in; }
 
 /* ---- metadata tables ---- */
 table {
