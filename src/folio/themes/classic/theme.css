@@ -25,6 +25,12 @@ em { font-style: italic; color: #2a2a2a; }
 strong { font-weight: 600; color: #111; }
 a { color: #1d4eb8; text-decoration: none; border-bottom: 0.4px solid #9bb1de; }
 
+/* images in body documents */
+img { max-width: 100%; height: auto; }
+figure { margin: 0.6em 0; break-inside: avoid; page-break-inside: avoid; }
+figure img { display: block; border: 1px solid #e0e0e0; }
+figcaption { font: 8pt/1.35 -apple-system, sans-serif; color: #888; margin-top: 0.35em; }
+
 /* hide pandoc's auto title block; the banner is the title */
 header#title-block-header { display: none; }
 
